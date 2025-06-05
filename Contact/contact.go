@@ -2,6 +2,7 @@ package contact
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -68,4 +69,34 @@ func (c *Contact) Print() {
 	fmt.Println(color.YellowString("Birthday:"), c.birthday.Format(time.DateOnly))
 	fmt.Println(color.MagentaString("Email:"), c.email)
 	fmt.Println()
+}
+
+func (c *Contact) FormatContactLine() string {
+	return c.name + ";" + c.phoneNumber + ";" + c.birthday.Format(time.DateOnly) + ";" + c.email
+}
+
+func ParseContactLine(line string) Contact {
+
+	parts := strings.Split(line, ";")
+
+	name := strings.TrimSpace(parts[0])
+	phone := strings.TrimSpace(parts[1])
+	birthdayStr := strings.TrimSpace(parts[2])
+	email := strings.TrimSpace(parts[3])
+
+	birthday, err := time.Parse(time.DateOnly, birthdayStr)
+	if err != nil {
+		return Contact{}
+	}
+
+	if name == "" || phone == "" || email == "" {
+		return Contact{}
+	}
+
+	return Contact{
+		name:        name,
+		phoneNumber: phone,
+		birthday:    birthday,
+		email:       email,
+	}
 }

@@ -1,0 +1,4 @@
+Ivan;+79157771234;1988-11-03;ivan.petrov@yandex.ru
+Maria;+79162229876;1998-07-10;m.smirnova@gmail.com
+Elena;+79158887766;1998-07-10;elena_golubeva@outlook.com
+Alexey;+79153334455;1992-01-28;alex_brown@mail.ru

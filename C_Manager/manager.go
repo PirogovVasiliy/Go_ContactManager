@@ -8,6 +8,10 @@ type Manager struct {
 	contactList []contact.Contact
 }
 
+func NewManager(cl []contact.Contact) *Manager {
+	return &Manager{contactList: cl}
+}
+
 func (cl *Manager) AddContact(con contact.Contact) {
 	if (con == contact.Contact{}) {
 		return
@@ -29,6 +33,8 @@ func (cl *Manager) PrinContacts() {
 		cl.contactList[i].Print()
 	}
 }
+
+func (cl *Manager) GetContacts() []contact.Contact { return cl.contactList }
 
 func delSlice(slice *[]contact.Contact, index int) {
 	(*slice)[index] = (*slice)[len(*slice)-1]
