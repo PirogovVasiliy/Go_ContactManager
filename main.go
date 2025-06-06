@@ -1,22 +1,24 @@
 package main
 
 import (
-	manager "ContactManager/C_Manager"
-	contact "ContactManager/Contact"
-	filework "ContactManager/FileWork"
+	dbwork "ContactManager/DBwork"
+	"fmt"
 	"time"
 )
 
 func main() {
 
-	cList := manager.NewManager(filework.LoadContacts())
+	dbwork.Connect()
 
-	cList.PrinContacts()
+	defer dbwork.Disconnect()
 
-	cont1 := contact.NewContact("Vasya", "+79149970001", time.Date(2003, time.May, 22, 0, 0, 0, 0, time.UTC), "kamvasilii@gmail.com")
-	cList.AddContact(cont1)
+	dbwork.PrintDataBase()
+	fmt.Println()
 
-	cList.DeleteContact("+79158887766")
+	dbwork.AddContact(4, "Ivan", "+79157771234", time.Date(1995, time.August, 15, 0, 0, 0, 0, time.UTC), "ivan.petrov@yandex.ru")
+	dbwork.AddContact(55, "Alex", "8800", time.Date(1992, time.January, 28, 0, 0, 0, 0, time.UTC), "alex_brown@mail.ru")
 
-	filework.SaveContacts(cList.GetContacts())
+	dbwork.DeleteContact("+79149970001")
+
+	dbwork.PrintDataBase()
 }
