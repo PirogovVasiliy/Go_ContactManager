@@ -3,6 +3,7 @@ package main
 import (
 	dbwork "ContactManager/DBwork"
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -12,13 +13,66 @@ func main() {
 
 	defer dbwork.Disconnect()
 
-	dbwork.PrintDataBase()
-	fmt.Println()
+	//contacts := createContacts()
 
-	dbwork.AddContact(4, "Ivan", "+79157771234", time.Date(1995, time.August, 15, 0, 0, 0, 0, time.UTC), "ivan.petrov@yandex.ru")
-	dbwork.AddContact(55, "Alex", "8800", time.Date(1992, time.January, 28, 0, 0, 0, 0, time.UTC), "alex_brown@mail.ru")
+	//start := time.Now()
+	//dbwork.AddWithGo(contacts)
+	//dbwork.AddWithoutGo(contacts)
+	//dbwork.DeleteWithGo(contacts) //10.0923154
+	//dbwork.DeleteWithoutGo(contacts)
+	//fmt.Println(time.Since(start).Seconds())
 
-	dbwork.DeleteContact("+79149970001")
+	//withGO()
+	//withoutGO()
+}
 
-	dbwork.PrintDataBase()
+func withGO() {
+	start := time.Now()
+	var wg sync.WaitGroup
+	wg.Add(3)
+	go func() {
+		defer wg.Done()
+		fmt.Println(len(dbwork.GetAllContacts()))
+	}()
+	go func() {
+		defer wg.Done()
+		fmt.Println(len(dbwork.GetContactsByName("Ivan")))
+	}()
+	go func() {
+		defer wg.Done()
+		fmt.Println(dbwork.CountContacts())
+	}()
+	wg.Wait()
+	fmt.Println(time.Since(start).Seconds())
+}
+
+func withoutGO() {
+	start := time.Now()
+	fmt.Println(len(dbwork.GetAllContacts()))
+	fmt.Println(len(dbwork.GetContactsByName("Ivan")))
+	fmt.Println(dbwork.CountContacts())
+	fmt.Println(time.Since(start).Seconds())
+}
+
+func createContacts() []dbwork.DBContact {
+	contacts := []dbwork.DBContact{}
+
+	baseID := 100
+	basePhonePrefix := "+999"
+	baseEmailDomain := "@example.com"
+	baseDate := time.Date(1980, time.January, 1, 0, 0, 0, 0, time.UTC)
+
+	for i := 0; i < 100; i++ {
+		id := baseID + i
+		name := fmt.Sprintf("GeneratedUser_%d", i)
+		phone := fmt.Sprintf("%s%04d", basePhonePrefix, i)
+		email := fmt.Sprintf("user_%d%s", i, baseEmailDomain)
+		birthday := baseDate.AddDate(0, 0, i)
+
+		newContact := dbwork.NewDBContact(id, name, phone, birthday, email)
+
+		contacts = append(contacts, newContact)
+	}
+
+	return contacts
 }
